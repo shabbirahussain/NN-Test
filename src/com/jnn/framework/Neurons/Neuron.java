@@ -9,18 +9,19 @@ import java.io.Serializable;
  * @author shabbirhussain
  * An generic interface for a neuron
  */
-public interface INeuron extends Serializable{
+public interface Neuron extends Serializable{
 	
-	/*
+	/**
 	 * Function used to trigger a neural response. 
-	 * inputVector: An array of input triggers received by a neuron. inputVector can be of any arbitrary range allowed by java. Any missing weights are initialized automatically on the first call to defaults in class.
+	 * @param inputVector: Input array of values
+	 * @return An neural output from neuron
 	 */
 	Double fire(Double inputVector[]);
 	
-	/*
+	/**
 	 * Adjusts weights of current neuron to cope for error.
-	 * errThisPat: Given error value to match for
+	 * @param errThisPat: Error in this pattern that has to be adjusted
+	 * @return Depreciated. No longer used
 	 */
 	Double adjustWeights(Double errThisPat);
-
 }

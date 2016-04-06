@@ -3,37 +3,31 @@
  */
 package com.jnn.framework.Neurons;
 
-import static com.jnn.framework.Constants.*;
-
 /**
  * @author shabbirhussain
- *
+ * Geenric Neuron class
  */
-public class GenericNeuron implements INeuron{
+public abstract class GenericNeuron implements Neuron{
 	// Default serialization ID
 	private static final long serialVersionUID = 1L;
 	protected Double inputWeights[];
 	protected Double myLastOutput, myLastInput[];
 	protected Double myLearningRate;
 	
-	/*
+	/**
 	 * Default Constructor
-	 * learningRate: Takes the learning rate for a neuron
 	 */
 	public GenericNeuron(){
 		inputWeights   = new Double[0];
 		myLastInput    = new Double[0];
-		myLearningRate = LEARNING_RATE;
 	}
 	
-	/*
+	/**
 	 * Maps given value to a output through a neural function
-	 * x: An input number
-	 * Returns: A double number generated for given input
+	 * @param x: An input number
+	 * @return: A double number generated for given input
 	 */
-	protected static double thresholdFun(double x){
-		return Math.tanh(x);
-	}
+	protected abstract double thresholdFun(double x);
 	
 	/* 
 	 * Extends the given list of inputWeights to the given size and initializes it to default value
@@ -47,43 +41,5 @@ public class GenericNeuron implements INeuron{
 		for(i=olen; i<nlen; i++) newWeights[i] = Math.random();
 		
 		inputWeights = newWeights;
-	}
-		
-	/*
-	 * Function used to trigger a neural response. 
-	 * inputVector: An array of input triggers received by a neuron. inputVector can be of any arbitrary range allowed by java. Any missing weights are initialized automatically on the first call to defaults in class.
-	 */
-	public Double fire(Double inputVector[]){
-		myLastInput = inputVector;
-		
-		if(inputVector.length > inputWeights.length)
-			extendInitalizeWeights(inputVector.length);
-		
-		myLastOutput=0.0;
-		for(int i=0, l=inputVector.length;i<l;i++) 
-			myLastOutput += (inputVector[i] * inputWeights[i]);
-		
-		myLastOutput = thresholdFun(myLastOutput);
-		return myLastOutput;
-	}
-	
-	/*
-	 * Adjusts weights of current neuron to cope for error.
-	 * errThisPat: Given error value to match for
-	 */
-	public Double adjustWeights(Double errThisPat){
-		double x = 1 - (myLastOutput * myLastOutput);
-		
-		for(int i=0, l=myLastInput.length;i<l;i++){
-			double weightChange = x;
-			weightChange    *= inputWeights[i] * errThisPat * myLearningRate * myLastInput[i];
-			inputWeights[i] += weightChange;
-		}
-
-		
-		// Re calculate error 
-		errThisPat+= myLastOutput - fire(myLastInput); 
-		
-		return errThisPat;
 	}
 }

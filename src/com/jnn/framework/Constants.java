@@ -11,9 +11,11 @@ public final class Constants {
 	public static final String FULL_NW_STORAGE_PATH = OBJECT_STORE_LOCATION + BASIC_NETWORK_STORAGE;
 	
 	public static final Integer NUM_HIDDEN_LAYERS =  1;
-	public static final Integer NUM_HIDDEN_NEURONS= 10;
+	public static final Integer NUM_HIDDEN_NEURONS= 50;
 
 	public static final String FILE_DELIMITER     = ",";
 	public static final String TRAINING_FILE_LOC  = "/Users/shabbirhussain/Documents/Temp/PacmanData/run1.dat";
-	public static final Integer NUM_TRAINING_CYLCE= 500;
+	public static final Integer NUM_TRAINING_CYLCE= 5000;
+	
+	public static final Double EPSILON = 1e-15;    // relative error tolerance
 }

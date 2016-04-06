@@ -14,14 +14,14 @@ import java.io.ObjectOutputStream;
 import static com.jnn.framework.Constants.*;
 
 import com.jnn.framework.NeuralNetwork.GenericNeuralNetwork;
-import com.jnn.framework.NeuralNetwork.INeuralNetwork;
+import com.jnn.framework.NeuralNetwork.NeuralNetwork;
 
 /**
  * @author shabbirhussain
  *
  */
 public final class Executor {
-	private static INeuralNetwork network;  // Stores the neural network
+	private static NeuralNetwork network;  // Stores the neural network
 
 	/**
 	 * @param args
@@ -31,14 +31,20 @@ public final class Executor {
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		// TODO Auto-generated method stub
 		
-		loadOrCreateNetwork(FULL_NW_STORAGE_PATH);
-		//createNewNetwork();
+		//loadNetwork(FULL_NW_STORAGE_PATH);
+		createNewNetwork();
 		trainOnInputs(TRAINING_FILE_LOC, NUM_TRAINING_CYLCE);
 		saveNetwork(FULL_NW_STORAGE_PATH);
 		
 		testNetworkOn(TRAINING_FILE_LOC);
 	}
 
+	/**
+	 * Runs the Neural Network on given test file
+	 * @param dataFileFullPath: Full path of data file to test
+	 * @throws IOException: Exceptions while accessing file
+	 * @throws ArrayIndexOutOfBoundsException: Input CSV should have at least 2 fields
+	 */
 	private static void testNetworkOn(String dataFileFullPath)  throws IOException, ArrayIndexOutOfBoundsException{
 		BufferedReader br;
 		String line, fields[];
@@ -52,9 +58,11 @@ public final class Executor {
 			output = Double.parseDouble(fields[0]);
 			System.out.print("Expected= " + output );
 			
-			inputVector = new Double[fields.length - 1];
+			inputVector = new Double[fields.length];
 			for(int i=1, l=fields.length; i<l; i++)
 				inputVector[i-1] = Double.parseDouble(fields[i]);
+			
+			inputVector[fields.length-1] = 1.0; // Add bias input
 			
 
 			System.out.print("\tActual= " + network.calculateOutput(inputVector)[0] + "\n");
@@ -62,10 +70,12 @@ public final class Executor {
 		br.close();
 	}
 	
-	/*
+	/**
 	 * Trains network on given input file. Where input file is a CSV with first field consists of output value and rest of fields define attributes to train in HEX
-	 * dataFileFullPath: File input stream for requested training session
-	 * numOfCycles: Number of training cycles
+	 * @param dataFileFullPath: File input stream for requested training session
+	 * @param numOfCycles: Number of training cycles
+	 * @throws IOException: Exceptions while accessing file
+	 * @throws ArrayIndexOutOfBoundsException: Input CSV should have at least 2 fields
 	 */
 	public static void trainOnInputs(String dataFileFullPath, Integer numOfCycles) throws IOException, ArrayIndexOutOfBoundsException{
 		BufferedReader br;
@@ -81,9 +91,11 @@ public final class Executor {
 				
 				output = Double.parseDouble(fields[0]);
 				
-				inputVector = new Double[fields.length - 1];
+				inputVector = new Double[fields.length];
 				for(int i=1, l=fields.length; i<l; i++)
 					inputVector[i-1] = Double.parseDouble(fields[i]);
+				
+				inputVector[fields.length-1] = 1.0; // Add bias input
 				
 				network.train(output, inputVector);
 			}
@@ -91,9 +103,10 @@ public final class Executor {
 		}
 	}
 	
-	/*
+	/**
 	 * Saves the network to a file in serialized object format
-	 * fullFilePath: Takes fully qualified file path
+	 * @param fullFilePath: Takes fully qualified file path
+	 * @throws IOException: Exceptions while accessing file
 	 */
 	public static void saveNetwork(String fullFilePath) throws IOException{
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fullFilePath));
@@ -101,9 +114,11 @@ public final class Executor {
 		oos.close();
 	}
 	
-	/*
+	/**
 	 * Loads a Neural network or if none exists creates one and saves it to the filessystem.
-	 * fullFilePath: Takes fully qualified file path
+	 * @param fullFilePath: Takes fully qualified file path
+	 * @throws IOException: Exceptions while accessing file
+	 * @throws ClassNotFoundException: Unable to load object class is obsolete
 	 */
 	public static void loadOrCreateNetwork(String fullFilePath) throws IOException, ClassNotFoundException{
 		try{
@@ -115,7 +130,7 @@ public final class Executor {
 		}
 	}
 	
-	/*
+	/**
 	 * Creates a new neutal network to train
 	 */
 	public static void createNewNetwork(){

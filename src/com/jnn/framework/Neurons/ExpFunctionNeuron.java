@@ -1,36 +1,29 @@
-	/**
- * 
- */
 package com.jnn.framework.Neurons;
 
-import static com.jnn.framework.Constants.*;
+import static com.jnn.framework.Constants.LEARNING_RATE;
 
-/**
- * @author shabbirhussain
- *
- */
-public class LinearFunctionNeuron extends GenericNeuron {
-	// Default serialization ID
-	private static final long serialVersionUID = 2L;
+public class ExpFunctionNeuron extends GenericNeuron{
+
+	// Serialization version ID
+	private static final long serialVersionUID = 3L;
 
 	/**
-	 * Default Constructor
+	 * Default constructor
 	 */
-	public LinearFunctionNeuron() {
-		super.myLearningRate = LINEAR_LEARNING_RATE;
+	public ExpFunctionNeuron(){
+		super.myLearningRate = LEARNING_RATE;
 	}
-
+	
 	/**
 	 * Maps given value to a output through a neural function
 	 * @param x: An input number
 	 * @return: A double number generated for given input
 	 */
 	@Override
-	protected double thresholdFun(double x) {
-		// TODO Auto-generated method stub
-		return 0;
+	protected double thresholdFun(double x){
+		return Math.tanh(x);
 	}
-	
+
 	/**
 	 * Function used to trigger a neural response. 
 	 * @param inputVector: Input array of values
@@ -46,6 +39,7 @@ public class LinearFunctionNeuron extends GenericNeuron {
 		for(int i=0, l=inputVector.length;i<l;i++) 
 			myLastOutput += (inputVector[i] * inputWeights[i]);
 		
+		myLastOutput = thresholdFun(myLastOutput);
 		return myLastOutput;
 	}
 	
@@ -55,15 +49,16 @@ public class LinearFunctionNeuron extends GenericNeuron {
 	 * @return Depreciated. No longer used
 	 */
 	public Double adjustWeights(Double errThisPat){
+		double x = 1 - (myLastOutput * myLastOutput);
+		
 		for(int i=0, l=myLastInput.length;i<l;i++){
-			double weightChange = errThisPat * myLearningRate * myLastInput[i];
-			double newWeight    = inputWeights[i] + weightChange; 
-			inputWeights[i] = Math.min(5, Math.max(-5, newWeight));
-			
+			double weightChange = x;
+			weightChange    *= inputWeights[i] * errThisPat * myLearningRate * myLastInput[i];
+			inputWeights[i] += weightChange;
 		}
+
 		// Re calculate error 
-		errThisPat += myLastOutput - fire(myLastInput);
+		errThisPat+= myLastOutput - fire(myLastInput); 
 		return errThisPat;
 	}
-
 }
