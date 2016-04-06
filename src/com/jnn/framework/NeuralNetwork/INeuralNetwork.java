@@ -3,11 +3,13 @@
  */
 package com.jnn.framework.NeuralNetwork;
 
+import java.io.Serializable;
+
 /**
  * @author shabbirhussain
  *
  */
-public interface INeuralNetwork {
+public interface INeuralNetwork extends Serializable{
 	/*
 	 * Given an input array of fields 
 	 * Returns: Neural output of network.

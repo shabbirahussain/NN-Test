@@ -3,11 +3,13 @@
  */
 package com.jnn.framework.Neurons;
 
+import java.io.Serializable;
+
 /**
  * @author shabbirhussain
  * An generic interface for a neuron
  */
-public interface INeuron {
+public interface INeuron extends Serializable{
 	
 	/*
 	 * Function used to trigger a neural response. 

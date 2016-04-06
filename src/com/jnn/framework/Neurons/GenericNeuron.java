@@ -4,11 +4,14 @@
 package com.jnn.framework.Neurons;
 
 import static com.jnn.framework.Constants.*;
+
 /**
  * @author shabbirhussain
  *
  */
 public class GenericNeuron implements INeuron{
+	// Default serialization ID
+	private static final long serialVersionUID = 1L;
 	private Double inputWeights[];
 	private Double myLastOutput, myLastInput[];
 	private Double myLearningRate;

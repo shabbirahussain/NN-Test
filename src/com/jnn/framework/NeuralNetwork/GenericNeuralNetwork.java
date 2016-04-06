@@ -14,7 +14,7 @@ import com.jnn.framework.Neurons.INeuron;
  * @author shabbirhussain
  * Holds the network and methods required to manage one
  */
-public class GenericNeuralNetwork implements Serializable, INeuralNetwork{
+public class GenericNeuralNetwork implements INeuralNetwork{
 	// Serialization version id
 	private static final long serialVersionUID = -58884961167664281L;
 	
@@ -28,18 +28,15 @@ public class GenericNeuralNetwork implements Serializable, INeuralNetwork{
 	 */
 	public GenericNeuralNetwork(Integer numHiddenLayers, Integer numHiddenNeuron){
 		numHiddenLayers = (numHiddenLayers<=0)? 1 : numHiddenLayers;
-		numLayers = numHiddenLayers + 2; //Add an input and output layer
+		numLayers = numHiddenLayers + 1; //Add an input and output layer
 		Integer neuronsPerLayer = (int) Math.ceil(numHiddenNeuron / numHiddenLayers);
 		
 		List<INeuron> layer; 
-
-		// Create an input layer
-		layer  =  new ArrayList<INeuron>();
-		layer.add(new GenericNeuron());
-		network.add(layer);
+		network = new ArrayList<List<INeuron>>();
+		
 		
 		// Create hidden layers
-		for(int i=1; i<numHiddenLayers; i++){
+		for(int i=0; i<numHiddenLayers; i++){
 			layer =  new ArrayList<INeuron>();
 			for(int j=0; j<neuronsPerLayer; j++)
 				layer.add(new GenericNeuron());
@@ -49,7 +46,7 @@ public class GenericNeuralNetwork implements Serializable, INeuralNetwork{
 		// Create Output Layer
 		layer  =  new ArrayList<INeuron>();
 		layer.add(new GenericNeuron());
-		network.add(layer);	
+		network.add(layer);
 	}
 	
 	/*
@@ -80,13 +77,11 @@ public class GenericNeuralNetwork implements Serializable, INeuralNetwork{
 				
 		for(int l=0;l<numLayers;l++){
 			layer  =  network.get(l);
-			
 			Double neuralOutput[] = new Double[layer.size()];
-			for(int n=0, ls=layer.size(); n<ls; n++){
+			for(int n=0, ls=layer.size(); n<ls; n++)
 				neuralOutput[n] = layer.get(n).fire(inputVector);
-
-			inputVector = neuralOutput;
-			}	
+			
+			inputVector = neuralOutput;	
 		}
 		return inputVector;
 	}
