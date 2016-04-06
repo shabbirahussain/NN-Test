@@ -36,9 +36,32 @@ public final class Executor {
 		trainOnInputs(TRAINING_FILE_LOC, NUM_TRAINING_CYLCE);
 		saveNetwork(FULL_NW_STORAGE_PATH);
 		
-		System.out.println(network.calculateOutput(new Double[] {1.0,1.0, 1.0})[0]);
+		testNetworkOn(TRAINING_FILE_LOC);
 	}
 
+	private static void testNetworkOn(String dataFileFullPath)  throws IOException, ArrayIndexOutOfBoundsException{
+		BufferedReader br;
+		String line, fields[];
+		Double output, inputVector[];
+		
+		br = new BufferedReader(new FileReader(dataFileFullPath));
+		while ((line = br.readLine()) != null) {
+			// use comma as separator
+			fields = line.split(FILE_DELIMITER);
+			
+			output = Double.parseDouble(fields[0]);
+			System.out.print("Expected= " + output );
+			
+			inputVector = new Double[fields.length - 1];
+			for(int i=1, l=fields.length; i<l; i++)
+				inputVector[i-1] = Double.parseDouble(fields[i]);
+			
+
+			System.out.print("\tActual= " + network.calculateOutput(inputVector)[0] + "\n");
+		}
+		br.close();
+	}
+	
 	/*
 	 * Trains network on given input file. Where input file is a CSV with first field consists of output value and rest of fields define attributes to train in HEX
 	 * dataFileFullPath: File input stream for requested training session

@@ -67,7 +67,8 @@ public class GenericNeuralNetwork implements INeuralNetwork{
 		Double neuralOutput = this.calculateOutput(inputVector)[0];
 		//calculate the error
 		Double errThisPat = output - neuralOutput;
-		printInputs(output, inputVector, errThisPat, neuralOutput);
+		//printInputs(output, inputVector, errThisPat, neuralOutput);
+		
 		for(int l=(network.size()-1); l>=0; l--){
 			Double residualError = 0.0;
 			List<INeuron> layer = network.get(l);

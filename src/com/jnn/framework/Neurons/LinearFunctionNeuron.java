@@ -21,14 +21,22 @@ public class LinearFunctionNeuron extends GenericNeuron {
 	}
 
 	/*
-	 * Maps given value to a output through a neural function
-	 * x: An input number
-	 * Returns: A double number generated for given input
+	 * Function used to trigger a neural response. 
+	 * inputVector: An array of input triggers received by a neuron. inputVector can be of any arbitrary range allowed by java. Any missing weights are initialized automatically on the first call to defaults in class.
 	 */
-	protected static double thresholdFun(double x){
-		return x;
+	public Double fire(Double inputVector[]){
+		myLastInput = inputVector;
+		
+		if(inputVector.length > inputWeights.length)
+			extendInitalizeWeights(inputVector.length);
+		
+		myLastOutput=0.0;
+		for(int i=0, l=inputVector.length;i<l;i++) 
+			myLastOutput += (inputVector[i] * inputWeights[i]);
+		
+		return myLastOutput;
 	}
-
+	
 	/*
 	 * Adjusts weights of current neuron to cope for error.
 	 * errThisPat: Given error value to match for
@@ -36,10 +44,10 @@ public class LinearFunctionNeuron extends GenericNeuron {
 	public Double adjustWeights(Double errThisPat){
 		for(int i=0, l=myLastInput.length;i<l;i++){
 			double weightChange = errThisPat * myLearningRate * myLastInput[i];
-			double newWeight    = inputWeights[i] - weightChange;
+			double newWeight    = inputWeights[i] + weightChange; 
 			inputWeights[i] = Math.min(5, Math.max(-5, newWeight));
+			
 		}
-		
 		// Re calculate error 
 		errThisPat += myLastOutput - fire(myLastInput);
 		return errThisPat;

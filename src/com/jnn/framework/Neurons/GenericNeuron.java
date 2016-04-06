@@ -39,7 +39,7 @@ public class GenericNeuron implements INeuron{
 	 * Extends the given list of inputWeights to the given size and initializes it to default value
 	 * nlen: Length of array to initialize
 	 */
-	private void extendInitalizeWeights(Integer nlen){
+	protected void extendInitalizeWeights(Integer nlen){
 		Double newWeights[] = new Double[nlen];
 		Integer i, olen=inputWeights.length;
 		
@@ -77,7 +77,7 @@ public class GenericNeuron implements INeuron{
 		for(int i=0, l=myLastInput.length;i<l;i++){
 			double weightChange = x;
 			weightChange    *= inputWeights[i] * errThisPat * myLearningRate * myLastInput[i];
-			inputWeights[i] -= weightChange;
+			inputWeights[i] += weightChange;
 		}
 
 		
