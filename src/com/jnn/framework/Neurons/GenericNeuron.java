@@ -12,9 +12,9 @@ import static com.jnn.framework.Constants.*;
 public class GenericNeuron implements INeuron{
 	// Default serialization ID
 	private static final long serialVersionUID = 1L;
-	private Double inputWeights[];
-	private Double myLastOutput, myLastInput[];
-	private Double myLearningRate;
+	protected Double inputWeights[];
+	protected Double myLastOutput, myLastInput[];
+	protected Double myLearningRate;
 	
 	/*
 	 * Default Constructor
@@ -31,7 +31,7 @@ public class GenericNeuron implements INeuron{
 	 * x: An input number
 	 * Returns: A double number generated for given input
 	 */
-	private static double thresholdFun(double x){
+	protected static double thresholdFun(double x){
 		return Math.tanh(x);
 	}
 	
@@ -79,7 +79,11 @@ public class GenericNeuron implements INeuron{
 			weightChange    *= inputWeights[i] * errThisPat * myLearningRate * myLastInput[i];
 			inputWeights[i] -= weightChange;
 		}
+
 		
-		return 0.0;
+		// Re calculate error 
+		errThisPat+= myLastOutput - fire(myLastInput); 
+		
+		return errThisPat;
 	}
 }

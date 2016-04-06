@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.jnn.framework.Neurons.GenericNeuron;
 import com.jnn.framework.Neurons.INeuron;
+import com.jnn.framework.Neurons.LinearFunctionNeuron;
 
 /**
  * @author shabbirhussain
@@ -45,9 +46,17 @@ public class GenericNeuralNetwork implements INeuralNetwork{
 		
 		// Create Output Layer
 		layer  =  new ArrayList<INeuron>();
-		layer.add(new GenericNeuron());
+		layer.add(new LinearFunctionNeuron());
 		network.add(layer);
 	}
+	
+	private void printInputs(Double output, Double inputVector[], Double error, Double nnoutput){
+		System.out.print("Cycle o/p= " + output + " [ ");
+		for(Double i : inputVector) System.out.print(Math.round(i) +" ");
+		System.out.println("] n/o= " + nnoutput + " Error= " + error);
+	}
+	
+	
 	
 	/*
 	 * Trains the network with one pattern
@@ -56,16 +65,18 @@ public class GenericNeuralNetwork implements INeuralNetwork{
 	 */
 	public void train(Double output, Double inputVector[]){
 		Double neuralOutput = this.calculateOutput(inputVector)[0];
-		
 		//calculate the error
 		Double errThisPat = output - neuralOutput;
+		printInputs(output, inputVector, errThisPat, neuralOutput);
 		for(int l=(network.size()-1); l>=0; l--){
-			Double residualError = 0.0;	
-			for(INeuron n: network.get(l))
+			Double residualError = 0.0;
+			List<INeuron> layer = network.get(l);
+			for(INeuron n: layer)
 				residualError += n.adjustWeights(errThisPat);
-			
-			errThisPat = residualError;
+
+			//errThisPat = residualError;
 		}
+
 	}
 	
 	/*

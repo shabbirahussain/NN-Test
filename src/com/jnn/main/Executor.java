@@ -31,12 +31,12 @@ public final class Executor {
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		// TODO Auto-generated method stub
 		
-		//loadOrCreateNetwork(FULL_NW_STORAGE_PATH);
-		createNewNetwork();
+		loadOrCreateNetwork(FULL_NW_STORAGE_PATH);
+		//createNewNetwork();
 		trainOnInputs(TRAINING_FILE_LOC, NUM_TRAINING_CYLCE);
 		saveNetwork(FULL_NW_STORAGE_PATH);
 		
-		System.out.println(network.calculateOutput(new Double[] {1.0,1.0,1.0})[0]);
+		System.out.println(network.calculateOutput(new Double[] {1.0,1.0, 1.0})[0]);
 	}
 
 	/*
