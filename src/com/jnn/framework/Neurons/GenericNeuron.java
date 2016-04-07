@@ -23,15 +23,22 @@ public abstract class GenericNeuron implements Neuron{
 	}
 	
 	/**
+	 * @return The last output of neuron
+	 */
+	public Double getLastOutput(){
+		return myLastOutput;
+	}
+	
+	/**
 	 * Maps given value to a output through a neural function
-	 * @param x: An input number
-	 * @return: A double number generated for given input
+	 * @param x An input number
+	 * @return A double number generated for given input
 	 */
 	protected abstract double thresholdFun(double x);
 	
 	/* 
 	 * Extends the given list of inputWeights to the given size and initializes it to default value
-	 * nlen: Length of array to initialize
+	 * nlen Length of array to initialize
 	 */
 	protected void extendInitalizeWeights(Integer nlen){
 		Double newWeights[] = new Double[nlen];

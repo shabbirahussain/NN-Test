@@ -11,6 +11,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.math.BigDecimal;
+
 import static com.jnn.framework.Constants.*;
 
 import com.jnn.framework.NeuralNetwork.GenericNeuralNetwork;
@@ -31,12 +33,16 @@ public final class Executor {
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		// TODO Auto-generated method stub
 		
-		//loadNetwork(FULL_NW_STORAGE_PATH);
-		createNewNetwork();
-		trainOnInputs(TRAINING_FILE_LOC, NUM_TRAINING_CYLCE);
+		if(CREATE_NEW_NETWORK)
+			createNewNetwork();
+		else
+			loadOrCreateNetwork(FULL_NW_STORAGE_PATH);
+		
+		
+		trainOnInputs(TRAINING_FILE_LOC, ERROR_TOLLERANCE, NUM_TRAINING_CYLCE);
 		saveNetwork(FULL_NW_STORAGE_PATH);
 		
-		testNetworkOn(TRAINING_FILE_LOC);
+		testNetworkOn(TESTING_FILE_LOC, ERROR_TOLLERANCE);
 	}
 
 	/**
@@ -45,18 +51,20 @@ public final class Executor {
 	 * @throws IOException: Exceptions while accessing file
 	 * @throws ArrayIndexOutOfBoundsException: Input CSV should have at least 2 fields
 	 */
-	private static void testNetworkOn(String dataFileFullPath)  throws IOException, ArrayIndexOutOfBoundsException{
+	private static void testNetworkOn(String dataFileFullPath, Integer errorTolerance)  throws IOException, ArrayIndexOutOfBoundsException{
 		BufferedReader br;
 		String line, fields[];
-		Double output, inputVector[];
+		Double expectedOutput, inputVector[];
+		System.out.println("\nTesting Network...\n");
 		
 		br = new BufferedReader(new FileReader(dataFileFullPath));
 		while ((line = br.readLine()) != null) {
 			// use comma as separator
 			fields = line.split(FILE_DELIMITER);
 			
-			output = Double.parseDouble(fields[0]);
-			System.out.print("Expected= " + output );
+			// Read expected output from file
+			expectedOutput = Double.parseDouble(fields[0]);
+			System.out.print("Expected= " + expectedOutput );
 			
 			inputVector = new Double[fields.length];
 			for(int i=1, l=fields.length; i<l; i++)
@@ -64,8 +72,13 @@ public final class Executor {
 			
 			inputVector[fields.length-1] = 1.0; // Add bias input
 			
-
-			System.out.print("\tActual= " + network.calculateOutput(inputVector)[0] + "\n");
+			// Calculate output from Neural network
+			Double actualOutput = network.calculateOutput(inputVector)[0];
+			
+			// Display results
+			BigDecimal bd = new BigDecimal(Double.toString(actualOutput));
+			bd = bd.setScale(errorTolerance, BigDecimal.ROUND_HALF_UP);
+			System.out.print("\tRnd(Actual)= " + bd + "\tActual= " + actualOutput + "\n");
 		}
 		br.close();
 	}
@@ -77,19 +90,20 @@ public final class Executor {
 	 * @throws IOException: Exceptions while accessing file
 	 * @throws ArrayIndexOutOfBoundsException: Input CSV should have at least 2 fields
 	 */
-	public static void trainOnInputs(String dataFileFullPath, Integer numOfCycles) throws IOException, ArrayIndexOutOfBoundsException{
+	public static void trainOnInputs(String dataFileFullPath, Integer errorTolerance, Integer numOfCycles) throws IOException, ArrayIndexOutOfBoundsException{
 		BufferedReader br;
 		String line, fields[];
-		Double output, inputVector[];
+		Double expectedOutput, inputVector[];
+		System.out.println("\nTraining Network...\n");
 		
-		for(int c=0; c<numOfCycles; c++){
+		for(int c=0; c<numOfCycles;){
 			br = new BufferedReader(new FileReader(dataFileFullPath));
 			while ((line = br.readLine()) != null) {
 				c++;
 				// use comma as separator
 				fields = line.split(FILE_DELIMITER);
 				
-				output = Double.parseDouble(fields[0]);
+				expectedOutput = Double.parseDouble(fields[0]);
 				
 				inputVector = new Double[fields.length];
 				for(int i=1, l=fields.length; i<l; i++)
@@ -97,7 +111,7 @@ public final class Executor {
 				
 				inputVector[fields.length-1] = 1.0; // Add bias input
 				
-				network.train(output, inputVector);
+				network.train(expectedOutput, errorTolerance, inputVector);
 			}
 			br.close();
 		}
