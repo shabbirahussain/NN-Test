@@ -20,7 +20,7 @@ public class ExpFunctionNeuron extends GenericNeuron{
 	 * @return A double number generated for given input
 	 */
 	@Override
-	protected double thresholdFun(double x){
+	protected double thresholdFun(Double x){
 		return Math.tan(x);
 	}
 
@@ -40,6 +40,7 @@ public class ExpFunctionNeuron extends GenericNeuron{
 			myLastOutput += (inputVector[i] * inputWeights[i]);
 		
 		myLastOutput = thresholdFun(myLastOutput);
+		myLastOutput = curbWildOutputs(myLastOutput);
 		return myLastOutput;
 	}
 	

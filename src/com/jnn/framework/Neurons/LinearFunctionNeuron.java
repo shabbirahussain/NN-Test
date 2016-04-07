@@ -26,7 +26,7 @@ public class LinearFunctionNeuron extends GenericNeuron {
 	 * @return A double number generated for given input
 	 */
 	@Override
-	protected double thresholdFun(double x) {
+	protected double thresholdFun(Double x) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -46,6 +46,7 @@ public class LinearFunctionNeuron extends GenericNeuron {
 		for(int i=0, l=inputVector.length;i<l;i++) 
 			myLastOutput += (inputVector[i] * inputWeights[i]);
 		
+		myLastOutput = curbWildOutputs(myLastOutput);
 		return myLastOutput;
 	}
 	

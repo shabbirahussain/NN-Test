@@ -30,11 +30,20 @@ public abstract class GenericNeuron implements Neuron{
 	}
 	
 	/**
+	 * Curbs the extreme wild outputs of neuron that can paralyze network
+	 * @param x Current output of neuron
+	 * @return Output adjusted to cope for extremities
+	 */
+	protected double curbWildOutputs(Double x){
+		return (x.isNaN() || x.isInfinite())? 0 : x;
+	}
+	
+	/**
 	 * Maps given value to a output through a neural function
 	 * @param x An input number
 	 * @return A double number generated for given input
 	 */
-	protected abstract double thresholdFun(double x);
+	protected abstract double thresholdFun(Double x);
 	
 	/* 
 	 * Extends the given list of inputWeights to the given size and initializes it to default value
@@ -45,7 +54,7 @@ public abstract class GenericNeuron implements Neuron{
 		Integer i, olen=inputWeights.length;
 		
 		for(i=0   ; i<olen; i++) newWeights[i] = inputWeights[i];
-		for(i=olen; i<nlen; i++) newWeights[i] = Math.random();
+		for(i=olen; i<nlen; i++) newWeights[i] = (Math.random() - 0.5)/5;
 		
 		inputWeights = newWeights;
 	}

@@ -59,7 +59,7 @@ public class GenericNeuralNetwork implements NeuralNetwork{
 		Double totalGradient = 0.0;
 		errorGradient  = new Double[numLayers];
 		for(int l=0; l<numLayers; l++){
-			errorGradient[l] =  Math.exp(numLayers - l);
+			errorGradient[l] =  Math.exp(l);
 			totalGradient += errorGradient[l];
 		}
 		for(int l=0; l<numLayers; l++)
@@ -80,7 +80,7 @@ public class GenericNeuralNetwork implements NeuralNetwork{
 		// Calculate the error
 		Double errThisPat    = expectedOutput - neuralOutput;
 
-		printInputs(expectedOutput, inputVector, errThisPat, neuralOutput);
+		//printInputs(expectedOutput, inputVector, errThisPat, neuralOutput);
 		
 		// Break training cycle if required precision is achieved
 		BigDecimal bd = new BigDecimal(errThisPat).setScale(errorTolerance, RoundingMode.HALF_EVEN);
