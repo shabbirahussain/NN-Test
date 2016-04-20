@@ -20,13 +20,18 @@ public interface Neuron extends Serializable{
 	
 	/**
 	 * Adjusts weights of current neuron to cope for error.
-	 * @param errThisPat Error in this pattern that has to be adjusted
-	 * @return Depreciated. No longer used
+	 * @param expectedOutput Expected outputs in the last run
+	 * @return Gradient error to be applied to the previous layer
 	 */
-	Double adjustWeights(Double errThisPat);
+	Double[] train(Double expectedOutput[]);
 	
 	/**
 	 * @return The last output of neuron
 	 */
 	Double getLastOutput();
+	
+	/**
+	 * @return The last inputs of neuron
+	 */
+	Double[] getLastInputs();
 }

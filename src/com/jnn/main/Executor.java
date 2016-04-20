@@ -16,14 +16,14 @@ import java.math.BigDecimal;
 import static com.jnn.framework.Constants.*;
 
 import com.jnn.framework.NeuralNetwork.GenericNeuralNetwork;
-import com.jnn.framework.NeuralNetwork.NeuralNetwork;
+import com.jnn.framework.Neurons.Neuron;
 
 /**
  * @author shabbirhussain
  *
  */
 public final class Executor {
-	private static NeuralNetwork network;  // Stores the neural network
+	private static Neuron network;  // Stores the neural network
 
 	/**
 	 * @param args
@@ -66,14 +66,14 @@ public final class Executor {
 			expectedOutput = Double.parseDouble(fields[0]);
 			System.out.print("Expected= " + expectedOutput );
 			
-			inputVector = new Double[fields.length];
+			inputVector = new Double[fields.length-1];
 			for(int i=1, l=fields.length; i<l; i++)
 				inputVector[i-1] = Double.parseDouble(fields[i]);
 			
-			inputVector[fields.length-1] = 1.0; // Add bias input
+			//inputVector[fields.length-1] = 1.0; // Add bias input
 			
 			// Calculate output from Neural network
-			Double actualOutput = network.calculateOutput(inputVector)[0];
+			Double actualOutput = network.fire(inputVector);
 			
 			// Display results
 			BigDecimal bd = new BigDecimal(Double.toString(actualOutput));
@@ -93,7 +93,7 @@ public final class Executor {
 	public static void trainOnInputs(String dataFileFullPath, Integer errorTolerance, Integer numOfCycles) throws IOException, ArrayIndexOutOfBoundsException{
 		BufferedReader br;
 		String line, fields[];
-		Double expectedOutput, inputVector[];
+		Double expectedOutput[], inputVector[];
 		System.out.println("\nTraining Network...\n");
 		
 		for(int c=0; c<numOfCycles;){
@@ -102,16 +102,15 @@ public final class Executor {
 				c++;
 				// use comma as separator
 				fields = line.split(FILE_DELIMITER);
+				expectedOutput    = new Double[1];
+				expectedOutput[0] = Double.parseDouble(fields[0]);
 				
-				expectedOutput = Double.parseDouble(fields[0]);
-				
-				inputVector = new Double[fields.length];
+				inputVector = new Double[fields.length-1];
 				for(int i=1, l=fields.length; i<l; i++)
 					inputVector[i-1] = Double.parseDouble(fields[i]);
 				
-				inputVector[fields.length-1] = 1.0; // Add bias input
-				
-				network.train(expectedOutput, errorTolerance, inputVector);
+				network.fire(inputVector);
+				network.train(expectedOutput);
 			}
 			br.close();
 		}
@@ -148,6 +147,24 @@ public final class Executor {
 	 * Creates a new neutal network to train
 	 */
 	public static void createNewNetwork(){
-		network = new GenericNeuralNetwork(NUM_HIDDEN_LAYERS, NUM_HIDDEN_NEURONS);
+		network = new GenericNeuralNetwork(NUM_HIDDEN_LAYERS, NUM_HIDDEN_NEURONS, 1);
+	}
+	
+	/**
+	 * Runs the network on input string
+	 * @param inputs
+	 * @return Output from neural network
+	 */
+	public static Double run(String inputs){
+		String fields[];
+		Double inputVector[];
+		
+		fields = inputs.split(FILE_DELIMITER);
+		
+		inputVector = new Double[fields.length];
+		for(int i=0, l=fields.length; i<l; i++)
+			inputVector[i] = Double.parseDouble(fields[i]);
+		
+		return network.fire(inputVector);
 	}
 }

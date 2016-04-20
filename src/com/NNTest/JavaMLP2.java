@@ -60,15 +60,15 @@ public class JavaMLP2
 	public static double RMSerror;
 
 	//training data
-	public static double[][] trainInputs  = new double[numPatterns][numInputs];
-	public static double[] trainOutput = new double[numPatterns];
+	public static double[][] trainInputs = new double[numPatterns][numInputs];
+	public static double[]   trainOutput = new double[numPatterns];
 
 	//the outputs of the hidden neurons
-	public static double[] hiddenVal  = new double[numHidden];
+	public static double[] hiddenVal   = new double[numHidden];
 
 	//the weights
 	public static double[][] weightsIH = new double[numInputs][numHidden];
-	public static double[] weightsHO = new double[numHidden];
+	public static double[]   weightsHO = new double[numHidden];
 
 
 	//==============================================================
